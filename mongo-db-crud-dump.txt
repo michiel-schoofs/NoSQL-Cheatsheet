@@ -1,0 +1,154 @@
+To make a new database you can simpley use the `use` command
+`use movies;`
+As long as you haven't written to it nothing will be visible
+Insert: Insert one Insert many
+syntax:
+	db.**collectionname**.insert(**document**)
+	db.**collectionname**.insertOne(**document**)
+	db.**collectionname**.insertMany(**document**)
+
+we can also insert documents in documents and can also use arrays even arrays of objects
+	comments:[{by:'Anne', text:'Funny'}, {by:'Kate', text:'I still love Ted'}, {by:'Leo', text:'Nice movie'}],
+    cast: ['Mark Walhlberg', 'Seth MacFarlane', 'Amanda Seyfried', 'Morgan Freeman'],
+    technical: {runningTime: 115, language: 'English'}
+	
+The select statement is find:
+db.comedy.find() //finds all
+db.comedy.find({year:2012}
+syntax
+db.comedy.find({*attribute*:*value*})
+
+    - db.collection.find({ "field" : { $gt: value } } );   // greater than  : field > value
+    - db.collection.find({ "field" : { $lt: value } } );   // less than  :  field < value
+    - db.collection.find({ "field" : { $gte: value } } );  // greater than or equal to : field >= value 
+    - db.collection.find({ "field" : { $lte: value } } );  // less than or equal to : field <= value
+	- db.collection.find({ "field" : { $ne: value } } );  // Not equals to: field != value
+	
+	- db.collection.find({ "field" : { $in: [values,...] } } );  // Field in specified values
+	- db.collection.find({ "field" : { $nin: [values,...] } } );  // Field not in specified values
+	- db.comedy.find ({'cast': {$all: ['Bradley Cooper', 'Ed Helms']}}) //Only matches if all specified values are present in the array
+Combining operators:
+db.comedy.find({year: {$gt: 2010, $lt: 2013}})
+
+Special operators:
+Or:
+db.comedy.find({year: 2012, $or: [{name: 'Ted'}, {name: 'The Hangover'}]})
+Nor:
+db.comedy.find({$nor: [{name: 'Ted'}, {name: 'The Hangover'}]});
+AND:
+/* The $and operator lets you use boolean and in a query. 
+You give $and an array of expressions, all of which must match to satisfy the query. */
+db.comedy.find({$and:[{year: {$gt: 2010}}, {year:{$lt: 2012}}]})
+
+
+-Size can be used to match the amount of comments
+db.comedy.find({comments: {$size:2}})
+/* $exists checks for existence (or lack thereof) of a field. */
+db.comedy.find ({tagline: {$exists : true}})
+
+Querrying inside of an object
+db.comedy.find({'merits.budget': {$gt: 50}})
+db.comedy.find({"technical.runningTime":{$gt: 105}})
+
+/* You can also query an array */
+db.comedy.find({cast:'Bradley Cooper'})
+
+/* When the key is an array, you can look for an object inside the array */
+db.comedy.find({'comments.by':'Steve'})
+
+Excluding fields
+db.comedy.find({year: {$lt:2012}}, {name:true})
+db.comedy.find({year: {$lt:2012}}, {name:false})
+
+
+Using Regex:
+db.comedy.find({name: /The hangover.*/i})
+(i means case insensitive , * means everything 
+
+
+Using SQL like where queries:
+/* MongoDB has another operator called $where. Using which you can perform SQL's WHERE-like operations. */
+db.comedy.find({$where: 'this.year > 2011'})
+/* Again, like JavaScript expressions $where is slower than native operators. 
+Use JavaScript expressions and $where ONLY when you can't accomplish the query using native operators. */
+
+
+# cursors
+
+Under the hood, mongo db utilizes cursors in order to accomplish the queries you provide. 
+You can also capture and store this cursor in a variable by using javascript
+
+var cursor = db.comedy.find({year:{$gt:2009}})
+
+We can iterate of the results with next() and hasNext using a while loop
+
+while(cursor.hasNext()){
+	printjson(cursor.next())
+}
+
+Note the function printJson
+
+We can also use the new fancy lambda like syntax:
+
+cursor.foreach(printjson)
+
+
+We can also define our own little print function
+var cursor = db.comedy.find({name:{$nin:["Ted 2"]}})
+cursor.forEach((l)=>{
+    print(tojson(l.name)+"-->"+tojson(l.cast))
+})
+
+Other functions
+// Count counts the number of row returned by the querry.
+db.comedy.find({year:{$gt:2009}}).count();
+// limit limts the amount of results returned by the querry
+db.comedy.find({year:{$gt:2009}}).limit(5);
+// We can also start returning from the third row by using the skip function
+db.comedy.find().skip(3);
+// We can also sort by using the sort function on a row
+db.comedy.find().sort({name : 1})
+
+
+Updating fields and documents
+
+If you want to update a document with the name Ted you can execute the following commands:
+db.comedy.update({name:'Ted'}, {director:'Seth MacFarlane'})
+This will overwrite the entire field to only overwriteone field use the set command
+
+db.comedy.update({name: /The hangover.*/i}, {'$set': {director:'Todd Phillips'}}, {multi: true})
+
+Note the last multi field to indicate we can possibly update more then one row!!
+
+To mitigate the need for {multi:true} We now have the function updateMultiple and updateOne
+{upsert:true} as an option will create a new document if none specified the specified filter
+
+We can also use other operators in our second paremeter:
+// $set sets a specific value (or overwrites)
+- db.comedy.update({name: /The hangover.*/i}, {'$set': {director:'Todd Phillips'}}, {multi: true})
+// $push pushes a value to an array
+- db.comedy.updateMany({name:/.*Ted.*/},{'$push':{cast: 'Giovanni Ribisi'}})
+// $pull will remove a specific value of an array
+- db.comedy.updateMany({name: /.*ted.*/i}, {'$pull': {cast: 'Giovanni Ribisi'}})
+//$pop can remove the first or last element from an array(respectively) 
+- db.comedy.update({name: 'Ted'}, {'$pop': {cast: -1}})
+- db.comedy.update({name: 'Ted'}, {'$pop': {cast: 1}})
+
+// !! $unset can delete a field from a document
+- db.comedy.update({name:'Ted'}, {$unset: {cast: 1}})
+
+# Remove and delete rows
+We can obviously also empty out documents we do that by running the following commands:
+- db.comedy.remove({name: /Ted*/i})
+This however only removes the first document it finds to mitigate this Mongo db again offers two options
+- db.comedy.deleteOne({name: /Ted*/i})
+- db.comedy.deleteMany({name: /Ted*/i})
+
+We can empty out a collection as follows:
+- db.comedy.remove({})
+
+To delete a collection use the `drop` command
+-db.comedy.drop()
+
+To delete an entire database use the following command:
+-db.dropDatabase()
