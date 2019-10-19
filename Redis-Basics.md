@@ -1,6 +1,15 @@
 # Redis(Key-Value store)
 A key value store simply stores data using a hashmap approach key => value. Easy to use and highly efficient for quick read/write operations. Cheatsheet is an overview of commands demonstrated at [Redis]( http://try.redis.io/).
-## **Simple operations**
+
+## Table of contents
+* [Simple Commands](#simple-operations)
+* [Data Structures](#data-structures)
+  * [Lists](#lists)
+  * [Sets](#sets)
+  * [Hashes](#hashes)
+ * [Other operations](#other-operations)
+
+## Simple operations
 | Command  | Description |
 | ------------- | ------------- |
 | SET ***Key*** ***value***   | Associates the given key with the value specified **(will override value if key exists)** |
@@ -9,7 +18,7 @@ A key value store simply stores data using a hashmap approach key => value. Easy
 | DEL ***key*** | Deletes key and associated value |
 | INCR ***key*** | Will increment value of the given key by 1 (doesn't work if NAN) |
 
-## **Data structures**
+## Data structures
 ### Lists
 Lists are zero based index and can't be set using the normal set or retrieved using the normal get. Do note that delete will still work.
 
@@ -60,7 +69,7 @@ HINCRBY kitty:1000 awesomness 27
 HDEL kitty:1000 favColor
 ```
 
-## **Other operations**
+## Other operations
 | Command  | Description |
 | ------------- | ------------- |
 | EXPIRE ***key*** ***seconds***| Makes the key delete itself after specified amount of seconds |
