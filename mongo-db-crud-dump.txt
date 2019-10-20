@@ -22,11 +22,11 @@ db.comedy.find({*attribute*:*value*})
     - db.collection.find({ "field" : { $lt: value } } );   // less than  :  field < value
     - db.collection.find({ "field" : { $gte: value } } );  // greater than or equal to : field >= value 
     - db.collection.find({ "field" : { $lte: value } } );  // less than or equal to : field <= value
-	- db.collection.find({ "field" : { $ne: value } } );  // Not equals to: field != value
-	
-	- db.collection.find({ "field" : { $in: [values,...] } } );  // Field in specified values
-	- db.collection.find({ "field" : { $nin: [values,...] } } );  // Field not in specified values
-	- db.comedy.find ({'cast': {$all: ['Bradley Cooper', 'Ed Helms']}}) //Only matches if all specified values are present in the array
+    - db.collection.find({ "field" : { $ne: value } } );  // Not equals to: field != value
+    
+    - db.collection.find({ "field" : { $in: [values,...] } } );  // Field in specified values
+    - db.collection.find({ "field" : { $nin: [values,...] } } );  // Field not in specified values
+    - db.comedy.find ({'cast': {$all: ['Bradley Cooper', 'Ed Helms']}}) //Only matches if all specified values are present in the array
 Combining operators:
 db.comedy.find({year: {$gt: 2010, $lt: 2013}})
 
