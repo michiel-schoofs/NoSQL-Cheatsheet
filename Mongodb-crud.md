@@ -1,4 +1,4 @@
-# MongoDB CRUD
+# Mongo-DB CRUD
 
 As any *RDBMS* It's important to know how to read, write, update and delete to your hearts content. We've already given a brief introduction into what Mongo is in [The introduction](Mongodb-introduction.md). So without further ado lets get to it.
 
@@ -32,19 +32,19 @@ You can also use arrays or even nest documents <u>within</u> documents like so:
 
 ```json
 {
-    name:"Rainbow mc sparkle",
-    age:25,
-    decoration:{
-    	shape:"Star"
-		color:"Yellow"
+    "name":"Rainbow mc sparkle",
+    "age":25,
+    "decoration":{
+    	"shape":"Star"
+		"color":"Yellow"
 	},
-	childrenNames: ["Louise","Adam",...]
+	"childrenNames": ["Louise","Adam",...]
 }
 ```
 
 ## Find
 
-Find is the way we querry a document. It's in effect a more powerfull version of the select statement in SQL. The syntax is as follows:
+Find is the way we query a document. It's in effect a more powerful version of the select statement in SQL. The syntax is as follows:
 
 - db.***Collection-name***.find({***selection-statement***},{***extra options***});
 
@@ -58,7 +58,7 @@ The simplest type of selection statement you can do is just checking for an attr
 - db.unicorns.find({name:"Rainbow mc sparkle"}) => gives our cute rainbow mc sparkle
 - db.unicorns.find({name:"Rainbow mc sparkle", age:25}) => gives our cute rainbow mc sparkle only if they're 25 years old
 
-The real power lays however in the concept of **operators**. Operators give us the abbility to write complex querries 
+The real power lays however in the concept of **operators**. Operators give us the ability to write complex queries 
 
 ### Regular operators
 
@@ -78,7 +78,7 @@ The real power lays however in the concept of **operators**. Operators give us t
 
 ### Logical operators
 
-Logical operators allow us to combine select querries in a complex way. just like operators allow us to do or, and statements inside if clauses in regular programming.
+Logical operators allow us to combine select queries in a complex way. just like operators allow us to do or, and statements inside if clauses in regular programming.
 
 | Operator | Description |
 | -------- | ----------- |
@@ -95,17 +95,17 @@ look at the following document:
 
 ```json
 {
-	name:"Mc pie",
-    children:[{name: "Jane", age:36},{name:"Aria", age:25}],
-    hobbies:{
-        name:"ski"
+	"name":"Mc pie",
+    "children":[{"name": "Jane", "age":36},{"name":"Aria", "age":25}],
+    "hobbies":{
+        "name":"ski"
     }
 }
 ```
 
-We can querry the array and the object using the following querry **note the use of "field"**
+We can query the array and the object using the following query **note the use of "field"**
 
-- db.unciorns.find({"children.name":"jane"}); => Will give me the unicorns with children named jane
+- db.unciorns.find({"children.name":"jane"}); => Will give me the unicorns with children named Jane
 - db.unicorns.find({hobbies.name:"ski"}); => Will give me the unicorns with the hobby skying.
 
 ### Examples of operators: 
@@ -114,7 +114,7 @@ You can always combine operators on a field like so
 
 - db.unicorns.find({age:{$gte:27,$lte:45}}) => Will give me all unicorns with an age between 27 and 45
 
-Where statements allow us to write queries using javascript like where syntax:
+Where statements allow us to write queries using JavaScript like where syntax:
 
 - db.unicorns.find({$where: "this.age>=27 && this.age<=45"})
 
